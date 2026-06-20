@@ -210,7 +210,7 @@ GET  /orders/history
 
 ### Seller Dashboard
 
-![Products](images/SellerDashbord.png)
+![Products](images/SellerDashboard.png)
 
 ### Seller Orders Recived
 
