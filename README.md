@@ -194,15 +194,27 @@ GET  /orders/history
 
 ### Home Page
 
-![Home](images/home.png)
+![Home](images/HomePage.png)
+
+### Account Registration
+
+![Products](images/AccountRegistration.png)
 
 ### Product Page
 
-![Products](images/products.png)
+![Products](images/ProductPage.png)
 
 ### Cart
 
-![Cart](images/cart.png)
+![Cart](images/CartPage.png)
+
+### Seller Dashboard
+
+![Products](images/SellerDashbord.png)
+
+### Seller Orders Recived
+
+![Products](images/SellerOrder.png)
 
 ---
 
