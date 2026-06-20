@@ -212,7 +212,7 @@ GET  /orders/history
 
 ![Products](images/SellerDashboard.png)
 
-### Seller Orders Recived
+### Seller Orders Received
 
 ![Products](images/SellerOrder.png)
 
