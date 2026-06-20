@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>E-Shop</title>
+
+    <link rel="stylesheet"
+          href="/css/style.css">
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+
+            font-family: Arial, sans-serif;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #4f46e5,
+                    #7c3aed
+                );
+
+            color: white;
+
+            min-height: 100vh;
+
+            display: flex;
+            flex-direction: column;
+        }
+
+        nav {
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            padding: 1rem 3rem;
+
+            background:
+                rgba(255,255,255,0.1);
+
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .nav-buttons {
+
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+
+            padding: 10px 18px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            font-size: 15px;
+
+            transition: 0.3s;
+        }
+
+        .btn-login {
+
+            background: white;
+            color: #4f46e5;
+        }
+
+        .btn-register {
+
+            background: #111827;
+            color: white;
+        }
+
+        .btn:hover {
+
+            transform: translateY(-2px);
+
+            opacity: 0.9;
+        }
+
+        .hero {
+
+            flex: 1;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            text-align: center;
+
+            padding: 2rem;
+        }
+
+        .hero-content {
+
+            max-width: 700px;
+        }
+
+        .hero h1 {
+
+            font-size: 3.5rem;
+
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+
+            font-size: 1.2rem;
+
+            line-height: 1.7;
+
+            margin-bottom: 2rem;
+
+            color: #e5e7eb;
+        }
+
+        .hero-buttons {
+
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .hero-btn {
+
+            padding: 14px 24px;
+
+            border-radius: 10px;
+
+            text-decoration: none;
+
+            font-weight: bold;
+
+            transition: 0.3s;
+        }
+
+        .primary-btn {
+
+            background: white;
+            color: #4f46e5;
+        }
+
+        .secondary-btn {
+
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid white;
+        }
+
+        .hero-btn:hover {
+
+            transform: translateY(-3px);
+        }
+
+        footer {
+
+            text-align: center;
+
+            padding: 1rem;
+
+            background:
+                rgba(255,255,255,0.1);
+
+            font-size: 0.9rem;
+        }
+
+        @media(max-width:768px) {
+
+            nav {
+
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .hero h1 {
+
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+
+                font-size: 1rem;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav>
+
+    <div class="logo">
+
+        🛒 E-Shop
+
+    </div>
+
+    <div class="nav-buttons">
+
+        <button class="btn btn-login"
+                onclick="goLogin()">
+
+            Login
+
+        </button>
+
+        <button class="btn btn-register"
+                onclick="goRegister()">
+
+            Register
+
+        </button>
+
+    </div>
+
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+
+    <div class="hero-content">
+
+        <h1>
+
+            Welcome To E-Shop
+
+        </h1>
+
+        <p>
+
+            Discover amazing products,
+            shop from trusted stores,
+            manage your orders,
+            and experience a modern
+            full-stack e-commerce platform.
+
+        </p>
+
+        <div class="hero-buttons">
+
+            <a href="/products.html"
+               class="hero-btn primary-btn">
+
+                Shop Now
+
+            </a>
+
+            <a href="/register.html"
+               class="hero-btn secondary-btn">
+
+                Become A Seller
+
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- FOOTER -->
+<footer>
+
+    © 2026 E-Shop.
+    All rights reserved.
+
+</footer>
+
+<script>
+
+    // AUTO REDIRECT IF LOGGED IN
+    const user =
+        JSON.parse(
+            localStorage.getItem('user')
+        );
+
+    if (user) {
+
+        if (user.role === 'OWNER') {
+
+            window.location.href =
+                '/admin.html';
+
+        } else {
+
+            window.location.href =
+                '/products.html';
+        }
+    }
+
+    function goLogin() {
+
+        window.location.href =
+            '/login.html';
+    }
+
+    function goRegister() {
+
+        window.location.href =
+            '/register.html';
+    }
+
+</script>
+
+</body>
+
+</html>

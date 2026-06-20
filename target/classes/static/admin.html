@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>Admin Dashboard - E-Commerce App</title>
+
+    <link rel="stylesheet" href="/css/style.css" />
+
+    <style>
+
+        body {
+            background: #f5f5f5;
+        }
+
+        .dashboard-menu {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .menu-btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #4f46e5;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .menu-btn:hover {
+            background: #3730a3;
+            transform: translateY(-2px);
+        }
+
+        .dashboard-section {
+            margin-top: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th,
+        table td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            overflow-x: auto;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .dashboard-header {
+
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-header h1 {
+
+            font-size: 2rem;
+
+            color: #111827;
+
+            margin-bottom: 8px;
+        }
+
+        .dashboard-header p {
+
+            color: #6b7280;
+        }
+
+        .stats-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fit, minmax(220px, 1fr));
+
+            gap: 1.5rem;
+
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+
+            background: white;
+
+            border-radius: 16px;
+
+            padding: 1.5rem;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 1rem;
+
+            box-shadow:
+                0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .stat-icon {
+
+            width: 60px;
+
+            height: 60px;
+
+            border-radius: 14px;
+
+            background: #EEF2FF;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 1.5rem;
+        }
+
+        .dashboard-tabs {
+
+            display: flex;
+
+            gap: 1rem;
+
+            margin-bottom: 2rem;
+
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+
+            border: none;
+
+            background: #EEF2FF;
+
+            color: #4f46e5;
+
+            padding: 12px 22px;
+
+            border-radius: 10px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition: 0.3s;
+        }
+
+        .tab-btn:hover {
+
+            background: #4f46e5;
+
+            color: white;
+        }
+
+        .tab-btn.active {
+
+            background: #4f46e5;
+
+            color: white;
+        }
+
+        .dashboard-card {
+
+            background: white;
+
+            border-radius: 18px;
+
+            padding: 2rem;
+
+            box-shadow:
+                0 4px 12px rgba(0,0,0,0.08);
+
+            margin-bottom: 2rem;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<nav>
+
+    <a href="#" class="nav-brand">
+        E-Shop Admin
+    </a>
+
+    <div class="nav-links" id="navLinks"></div>
+
+</nav>
+
+<div class="container">
+
+    <div id="alertMsg" class="alert"></div>
+
+    <h2 style="margin-bottom:2rem;">
+        Dashboard
+    </h2>
+
+    <!-- DASHBOARD -->
+    <div class="container">
+
+        <div class="dashboard-header">
+
+            <h1>Seller Dashboard</h1>
+
+            <p>
+                Welcome back! Here's your store overview.
+            </p>
+
+        </div>
+
+        <!-- STATS -->
+        <div class="stats-grid">
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    📦
+                </div>
+
+                <div>
+
+                    <h2 id="totalProducts">
+                        0
+                    </h2>
+
+                    <p>Total Listings</p>
+
+                </div>
+
+            </div>
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    ✅
+                </div>
+
+                <div>
+
+                    <h2 id="activeProducts">
+                        0
+                    </h2>
+
+                    <p>Active Products</p>
+
+                </div>
+
+            </div>
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    🛒
+                </div>
+
+                <div>
+
+                    <h2 id="totalOrders">
+                        0
+                    </h2>
+
+                    <p>Incoming Orders</p>
+
+                </div>
+
+            </div>
+
+            <!-- COMPLETED ORDERS -->
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    🎉
+                </div>
+
+                <div>
+
+                    <h2 id="completedOrdersCount">
+                        0
+                    </h2>
+
+                    <p>Completed Orders</p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- TABS -->
+        <div class="dashboard-tabs">
+
+            <button
+                    class="tab-btn active"
+                    onclick="showDashboardTab('addProductSection', this)">
+
+                ➕ Add Product
+
+            </button>
+
+            <button
+                    class="tab-btn"
+                    onclick="showDashboardTab('productsSection', this)">
+
+                📋 My Listings
+
+            </button>
+
+            <button
+                    class="tab-btn"
+                    onclick="showDashboardTab('ordersSection', this)">
+
+                🚚 Incoming Orders
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- ADD PRODUCT -->
+    <div id="addProductSection"
+         class="dashboard-section">
+
+        <div class="auth-container"
+             style="margin:0;max-width:100%;">
+
+            <h3>Add New Product</h3>
+
+            <form id="addProductForm"
+                  style="margin-top:1rem;">
+
+                <div class="form-group">
+
+                    <label>Product Name</label>
+
+                    <input type="text"
+                           id="prodName"
+                           required>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Price (₹)</label>
+
+                    <input type="number"
+                           step="0.01"
+                           id="prodPrice"
+                           required>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Quantity</label>
+
+                    <input type="number"
+                           id="prodQuantity"
+                           required>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Store Name</label>
+
+                    <input type="text"
+                           id="prodStore"
+                           required>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Description</label>
+
+                    <textarea id="prodDesc"
+                              rows="3"
+                              style="width:100%;padding:0.5rem;"
+                              required></textarea>
+
+                </div>
+
+                <!-- CATEGORY -->
+                <div class="form-group">
+
+                    <label>Category</label>
+
+                    <select id="prodCategory"
+                            required>
+
+                        <option value="">
+                            Select Category
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <!-- IMAGE -->
+                <div class="form-group">
+
+                    <label>Product Image</label>
+
+                    <input type="file"
+                           id="prodImage"
+                           accept=".png,.jpg,.jpeg"
+                           required>
+
+                </div>
+
+                <button type="submit"
+                        class="btn">
+
+                    Add Product
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- ORDERS -->
+    <div id="ordersSection"
+         class="dashboard-section"
+         style="display:none;">
+
+        <div class="table-container"
+             style="padding:1rem;">
+
+            <h3 style="margin-bottom:1rem;">
+
+                Orders For My Products
+
+            </h3>
+
+            <table>
+
+                <thead>
+
+                <tr>
+
+                    <th>Order ID</th>
+
+                    <th>Customer ID</th>
+
+                    <th>Delivery Address</th>
+
+                    <th>Product</th>
+
+                    <th>Qty</th>
+
+                    <th>Total Price</th>
+
+                    <th>Date</th>
+
+                    <th>Action</th>
+
+                </tr>
+
+                </thead>
+
+                <tbody id="ownerOrdersTableBody"></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- PRODUCTS -->
+    <div id="productsSection"
+         class="dashboard-section"
+         style="display:none;">
+
+        <div class="table-container"
+             style="padding:1rem;">
+
+            <h3 style="margin-bottom:1rem;">
+
+                My Products
+
+            </h3>
+
+            <table>
+
+                <thead>
+
+                <tr>
+
+                    <th>ID</th>
+
+                    <th>Image</th>
+
+                    <th>Name</th>
+
+                    <th>Price</th>
+
+                    <th>Qty</th>
+
+                    <th>Status</th>
+
+                    <th>Action</th>
+
+                </tr>
+
+                </thead>
+
+                <tbody id="myProductsTableBody"></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="/js/app.js"></script>
+
+<script>
+
+    const user = checkAuth('OWNER');
+
+    // SHOW SECTION
+    function showSection(sectionId) {
+
+        document
+            .querySelectorAll('.dashboard-section')
+            .forEach(section => {
+
+                section.style.display = 'none';
+            });
+
+        document
+            .getElementById(sectionId)
+            .style.display = 'block';
+    }
+
+    // DASHBOARD TAB SWITCH
+    function showDashboardTab(sectionId, button) {
+
+        // HIDE ALL SECTIONS
+        document
+            .querySelectorAll('.dashboard-section')
+            .forEach(section => {
+
+                section.style.display = 'none';
+            });
+
+        // SHOW SELECTED SECTION
+        document
+            .getElementById(sectionId)
+            .style.display = 'block';
+
+        // REMOVE ACTIVE CLASS
+        document
+            .querySelectorAll('.tab-btn')
+            .forEach(btn => {
+
+                btn.classList.remove('active');
+            });
+
+        // ADD ACTIVE CLASS
+        button.classList.add('active');
+    }
+
+    // LOAD CATEGORIES
+    async function loadCategories() {
+
+        try {
+
+            const categories =
+                await apiFetch('/categories');
+
+            const select =
+                document.getElementById(
+                    'prodCategory'
+                );
+
+            categories.forEach(category => {
+
+                select.innerHTML += `
+                    <option value="${category.id}">
+                        ${category.name}
+                    </option>
+                `;
+            });
+
+        } catch (err) {
+
+            console.error(err);
+        }
+    }
+
+    // ADD PRODUCT
+    document.getElementById('addProductForm')
+        .addEventListener('submit', async (e) => {
+
+            e.preventDefault();
+
+            const name =
+                document.getElementById('prodName').value;
+
+            const price =
+                parseFloat(
+                    document.getElementById('prodPrice').value
+                );
+
+            const quantity =
+                parseInt(
+                    document.getElementById('prodQuantity').value
+                );
+
+            const storeName =
+                document.getElementById('prodStore').value;
+
+            const description =
+                document.getElementById('prodDesc').value;
+
+            const categoryId =
+                document.getElementById('prodCategory').value;
+
+            const imageFile =
+                document.getElementById('prodImage').files[0];
+
+            const productData = {
+
+                name,
+                price,
+                ownerId: user.id,
+                quantity,
+                storeName,
+                description,
+                categoryId
+            };
+
+            const formData = new FormData();
+
+            formData.append(
+                'product',
+                new Blob(
+                    [JSON.stringify(productData)],
+                    {
+                        type: 'application/json'
+                    }
+                )
+            );
+
+            formData.append(
+                'image',
+                imageFile
+            );
+
+            try {
+
+                await apiFetch('/products', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                showAlert(
+                    'Product added successfully',
+                    false
+                );
+
+                document
+                    .getElementById('addProductForm')
+                    .reset();
+
+                loadMyProducts();
+                loadDashboardStats();
+
+            } catch (err) {
+
+                showAlert(
+                    'Failed to add product: '
+                    + err.message,
+                    true
+                );
+            }
+        });
+
+    // ======================================
+// LOAD OWNER ORDERS
+// ======================================
+async function loadOwnerOrders() {
+
+    try {
+
+        const orders =
+            await apiFetch('/orders/owner');
+
+        const tbody =
+            document.getElementById(
+                'ownerOrdersTableBody'
+            );
+
+        if (!tbody) return;
+
+        tbody.innerHTML = '';
+
+        let incomingCount = 0;
+        let completedCount = 0;
+
+        if (orders.length === 0) {
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7"
+                        style="
+                            text-align:center;
+                            padding:20px;
+                        ">
+                        No orders found
+                    </td>
+                </tr>
+            `;
+
+        } else {
+
+            orders.forEach(order => {
+
+                if (order.status === 'PLACED') {
+                    incomingCount++;
+                }
+
+                if (order.status === 'COMPLETED') {
+                    completedCount++;
+                }
+
+                order.items.forEach(item => {
+
+                    const date =
+                        formatDate(order.orderDate);
+
+                    tbody.innerHTML += `
+                        <tr>
+
+                            <td>
+                                #${order.id}
+                            </td>
+
+                            <td>
+                                ${order.userId}
+                            </td>
+
+                            <td>
+                                ${order.deliveryAddress || 'N/A'}
+                            </td>
+
+                            <td>
+
+                                <div style="
+                                    display:flex;
+                                    align-items:center;
+                                    gap:10px;
+                                ">
+
+                                    <img
+                                        src="${item.product.imageUrl}"
+                                        alt="${item.product.name}"
+                                        style="
+                                            width:45px;
+                                            height:45px;
+                                            object-fit:cover;
+                                            border-radius:6px;
+                                        "
+                                    >
+
+                                    <span>
+                                        ${item.product.name}
+                                    </span>
+
+                                </div>
+
+                            </td>
+
+                            <td>
+                                ${item.quantity}
+                            </td>
+
+                            <td>
+                                ${formatPrice(
+                                    item.product.price * item.quantity
+                                )}
+                            </td>
+
+                            <td>
+                                ${date}
+                            </td>
+
+                            <td>
+
+                                ${
+                                    order.status === 'PLACED'
+
+                                    ? `
+                                        <button
+                                            class="btn"
+                                            onclick="
+                                                completeOrder(${order.id})
+                                            "
+                                            style="
+                                                width:auto;
+                                                padding:8px 14px;
+                                                font-size:14px;
+                                            "
+                                        >
+                                            Complete
+                                        </button>
+                                    `
+
+                                    : `
+                                        <span style="
+                                            color:green;
+                                            font-weight:bold;
+                                        ">
+                                            Completed
+                                        </span>
+                                    `
+                                }
+
+                            </td>
+
+                        </tr>
+                    `;
+                });
+            });
+        }
+
+        // UPDATE DASHBOARD COUNTS
+        document.getElementById(
+            'incomingOrdersCount'
+        ).innerText = incomingCount;
+
+        document.getElementById(
+            'completedOrdersCount'
+        ).innerText = completedCount;
+
+    } catch (error) {
+
+        console.error(
+            'Failed to load owner orders:',
+            error
+        );
+    }
+}
+
+    // LOAD PRODUCTS
+    async function loadMyProducts() {
+
+        try {
+
+            const products =
+                await apiFetch(
+                    `/products/owner/${user.id}`
+                );
+
+            const tbody =
+                document.getElementById(
+                    'myProductsTableBody'
+                );
+
+            tbody.innerHTML = '';
+            loadDashboardStats();
+
+            if (products.length === 0) {
+
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7"
+                            style="text-align:center;">
+                            No products listed yet.
+                        </td>
+                    </tr>
+                `;
+
+                return;
+            }
+
+            products.forEach(p => {
+
+                const statusText =
+                    p.available
+                        ? `<span style="color:green;font-weight:bold;">Available</span>`
+                        : `<span style="color:red;font-weight:bold;">Out of Stock</span>`;
+
+                const actionBtn =
+                    p.available
+                        ? `<button class="btn"
+                            style="
+                                background:#f44336;
+                                padding:0.3rem 0.5rem;
+                                font-size:0.8rem;"
+                            onclick="toggleAvailability(${p.id}, false)">
+                            Mark Unavailable
+                           </button>`
+                        : `<button class="btn"
+                            style="
+                                background:#4CAF50;
+                                padding:0.3rem 0.5rem;
+                                font-size:0.8rem;"
+                            onclick="toggleAvailability(${p.id}, true)">
+                            Mark Available
+                           </button>`;
+
+                tbody.innerHTML += `
+                    <tr>
+
+                        <td>#${p.id}</td>
+
+                        <td>
+
+                            <img src="${p.imageUrl}"
+                                 alt="${p.name}"
+                                 style="
+                                    width:50px;
+                                    height:50px;
+                                    object-fit:cover;
+                                    border-radius:4px;">
+
+                        </td>
+
+                        <td>${p.name}</td>
+
+                        <td>${formatPrice(p.price)}</td>
+
+                        <td>${p.quantity}</td>
+
+                        <td>${statusText}</td>
+
+                        <td>${actionBtn}</td>
+
+                    </tr>
+                `;
+            });
+
+        } catch (err) {
+
+            showAlert(
+                'Failed to load products: '
+                + err.message,
+                true
+            );
+        }
+    }
+
+    // LOAD DASHBOARD STATS
+async function loadDashboardStats() {
+
+    try {
+
+        // PRODUCTS
+        const products =
+            await apiFetch(
+                `/products/owner/${user.id}`
+            );
+
+        // ORDERS
+        const orders =
+            await apiFetch('/orders/owner');
+
+        // TOTAL PRODUCTS
+        document.getElementById(
+            'totalProducts'
+        ).textContent = products.length;
+
+        // ACTIVE PRODUCTS
+        const activeProducts =
+            products.filter(
+                p => p.available
+            ).length;
+
+        document.getElementById(
+            'activeProducts'
+        ).textContent = activeProducts;
+
+        // INCOMING ORDERS
+        const incomingOrders =
+            orders.filter(
+                o => o.status === 'PLACED'
+            );
+
+        // COMPLETED ORDERS
+        const completedOrders =
+            orders.filter(
+                o => o.status === 'COMPLETED'
+            );
+
+        document.getElementById(
+            'totalOrders'
+        ).textContent = incomingOrders.length;
+
+        document.getElementById(
+            'completedOrdersCount'
+        ).textContent = completedOrders.length;
+
+    } catch (err) {
+
+        console.error(
+            'Failed to load dashboard stats',
+            err
+        );
+    }
+}
+
+    // TOGGLE AVAILABILITY
+    async function toggleAvailability(
+        productId,
+        isAvailable
+    ) {
+
+        try {
+
+            await apiFetch(
+                `/products/${productId}/availability?available=${isAvailable}`,
+                {
+                    method: 'PUT'
+                }
+            );
+
+            showAlert(
+                'Availability updated!',
+                false
+            );
+
+            loadMyProducts();
+
+        } catch (err) {
+
+            showAlert(
+                'Failed to update availability',
+                true
+            );
+        }
+    }
+
+    // COMPLETE ORDER
+async function completeOrder(orderId) {
+
+    try {
+
+        await apiFetch(
+            `/orders/${orderId}/complete`,
+            {
+                method: 'PUT'
+            }
+        );
+
+        showAlert(
+            'Order completed successfully!',
+            false
+        );
+
+        loadOwnerOrders();
+
+        loadDashboardStats();
+
+    } catch (err) {
+
+        showAlert(
+            err.message,
+            true
+        );
+    }
+}
+
+    // INITIAL LOAD
+    if (user) {
+
+    loadCategories();
+
+    loadOwnerOrders();
+
+    loadMyProducts();
+
+    loadDashboardStats();
+
+    showDashboardTab(
+        'addProductSection',
+        document.querySelector('.tab-btn')
+    );
+}
+
+    async function completeOrder(orderId) {
+
+    try {
+
+        await apiFetch(
+            `/orders/${orderId}/complete`,
+            {
+                method: 'PUT'
+            }
+        );
+
+        showAlert(
+            'Order completed successfully!'
+        );
+
+        loadOwnerOrders();
+
+        loadDashboardStats();
+
+    } catch (err) {
+
+        showAlert(
+            err.message,
+            true
+        );
+    }
+}
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,17 @@
+com\ecommerce\model\Order.class
+com\ecommerce\controller\CartController.class
+com\ecommerce\repository\ProductRepository.class
+com\ecommerce\dto\CartRequest.class
+com\ecommerce\model\Product.class
+com\ecommerce\dto\AuthRequest.class
+com\ecommerce\model\CartItem.class
+com\ecommerce\controller\AuthController.class
+com\ecommerce\EcommerceApplication.class
+com\ecommerce\dto\CheckoutRequest.class
+com\ecommerce\repository\OrderRepository.class
+com\ecommerce\controller\ProductController.class
+com\ecommerce\repository\UserRepository.class
+com\ecommerce\repository\CartItemRepository.class
+com\ecommerce\model\User.class
+com\ecommerce\controller\OrderController.class
+com\ecommerce\config\DataSeeder.class

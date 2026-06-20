@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>My Orders - E-Shop</title>
+
+    <link rel="stylesheet"
+          href="/css/style.css">
+
+    <style>
+
+        body {
+            background: #f5f5f5;
+        }
+
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .orders-container {
+
+            margin-top: 2rem;
+        }
+
+        .order-card {
+
+            background: white;
+
+            border-radius: 12px;
+
+            margin-bottom: 2rem;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .order-header {
+
+            padding: 1rem 1.5rem;
+
+            background: #4f46e5;
+
+            color: white;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            flex-wrap: wrap;
+
+            gap: 1rem;
+        }
+
+        .order-status {
+
+            background: #22c55e;
+
+            padding: 6px 12px;
+
+            border-radius: 20px;
+
+            font-size: 0.9rem;
+
+            font-weight: bold;
+        }
+
+        .order-body {
+
+            padding: 1.5rem;
+        }
+
+        .order-item {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 1rem;
+
+            padding: 1rem 0;
+
+            border-bottom: 1px solid #eee;
+
+            flex-wrap: wrap;
+        }
+
+        .order-item:last-child {
+
+            border-bottom: none;
+        }
+
+        .product-info {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 1rem;
+        }
+
+        .product-info img {
+
+            width: 70px;
+
+            height: 70px;
+
+            object-fit: cover;
+
+            border-radius: 10px;
+        }
+
+        .product-name {
+
+            font-weight: bold;
+
+            margin-bottom: 0.3rem;
+        }
+
+        .product-store {
+
+            color: #666;
+
+            font-size: 0.9rem;
+        }
+
+        .item-price {
+
+            font-weight: bold;
+
+            color: #111827;
+        }
+
+        .order-footer {
+
+            padding: 1rem 1.5rem;
+
+            background: #f9fafb;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            flex-wrap: wrap;
+
+            gap: 1rem;
+
+            border-top: 1px solid #eee;
+        }
+
+        .total-price {
+
+            font-size: 1.2rem;
+
+            font-weight: bold;
+
+            color: #111827;
+        }
+
+        .address {
+
+            color: #374151;
+        }
+
+        .empty-orders {
+
+            background: white;
+
+            padding: 3rem;
+
+            border-radius: 12px;
+
+            text-align: center;
+
+            box-shadow:
+                0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .empty-orders h3 {
+
+            margin-bottom: 1rem;
+        }
+
+        .shop-btn {
+
+            display: inline-block;
+
+            margin-top: 1rem;
+
+            padding: 12px 20px;
+
+            background: #4f46e5;
+
+            color: white;
+
+            border-radius: 8px;
+
+            text-decoration: none;
+
+            transition: 0.3s;
+        }
+
+        .shop-btn:hover {
+
+            background: #3730a3;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav>
+
+    <a href="#"
+       class="nav-brand">
+
+        E-Shop
+
+    </a>
+
+    <div class="nav-links"
+         id="navLinks"></div>
+
+</nav>
+
+<!-- MAIN -->
+<div class="container">
+
+    <div id="alertMsg"
+         class="alert"></div>
+
+    <h2 style="margin-top:2rem;">
+
+        My Orders
+
+    </h2>
+
+    <!-- ORDERS -->
+    <div class="orders-container"
+         id="ordersContainer">
+
+    </div>
+
+</div>
+
+<script src="/js/app.js"></script>
+
+<script>
+
+    const user =
+        checkAuth('CUSTOMER');
+
+    // LOAD ORDERS
+    async function loadOrders() {
+
+        try {
+
+            const orders =
+                await apiFetch('/orders');
+
+            const container =
+                document.getElementById(
+                    'ordersContainer'
+                );
+
+            container.innerHTML = '';
+
+            // EMPTY ORDERS
+            if (orders.length === 0) {
+
+                container.innerHTML = `
+                    <div class="empty-orders">
+
+                        <h3>
+
+                            No Orders Yet
+
+                        </h3>
+
+                        <p>
+
+                            Start shopping to
+                            place your first order.
+
+                        </p>
+
+                        <a href="/products.html"
+                           class="shop-btn">
+
+                            Shop Now
+
+                        </a>
+
+                    </div>
+                `;
+
+                return;
+            }
+
+            // LOOP ORDERS
+            orders.forEach(order => {
+
+                const date =
+                    formatDate(
+                        order.orderDate
+                    );
+
+                let itemsHtml = '';
+
+                let total = 0;
+
+                order.items.forEach(item => {
+
+                    const subtotal =
+                        item.price
+                        * item.quantity;
+
+                    total += subtotal;
+
+                    itemsHtml += `
+                        <div class="order-item">
+
+                            <div class="product-info">
+
+                                <img
+                                    src="${item.product.imageUrl}"
+                                    alt="${item.product.name}">
+
+                                <div>
+
+                                    <div class="product-name">
+
+                                        ${item.product.name}
+
+                                    </div>
+
+                                    <div class="product-store">
+
+                                        ${item.product.storeName}
+
+                                    </div>
+
+                                    <div style="
+                                        color:#666;
+                                        font-size:0.9rem;">
+
+                                        Qty:
+                                        ${item.quantity}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="item-price">
+
+                                ${formatPrice(total)}
+
+                            </div>
+
+                        </div>
+                    `;
+                });
+
+                container.innerHTML += `
+                    <div class="order-card">
+
+                        <!-- HEADER -->
+                        <div class="order-header">
+
+                            <div>
+
+                                <div style="
+                                    font-size:1.1rem;
+                                    font-weight:bold;">
+
+                                    Order #${order.id}
+
+                                </div>
+
+                                <div style="
+                                    margin-top:4px;
+                                    font-size:0.9rem;">
+
+                                    ${date}
+
+                                </div>
+
+                            </div>
+
+                            <div class="order-status">
+
+                                ${order.status || 'PLACED'}
+
+                            </div>
+
+                        </div>
+
+                        <!-- BODY -->
+                        <div class="order-body">
+
+                            ${itemsHtml}
+
+                        </div>
+
+                        <!-- FOOTER -->
+                        <div class="order-footer">
+
+                            <div class="address">
+
+                                📍
+                                ${order.deliveryAddress || 'N/A'}
+
+                            </div>
+
+                            <div class="total-price">
+
+                                Total:
+                                ${formatPrice(total)}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                `;
+            });
+
+        } catch (err) {
+
+            showAlert(
+                'Failed to load orders: '
+                + err.message,
+                true
+            );
+        }
+    }
+
+    // INITIAL LOAD
+    if (user) {
+
+        loadOrders();
+    }
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Products - E-Shop</title>
+
+    <link rel="stylesheet"
+          href="/css/style.css">
+
+    <style>
+
+        body {
+        background: #f5f5f5;
+        }
+
+        nav {
+
+        position: sticky;
+
+        top: 0;
+
+        z-index: 100;
+
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: center;
+
+        padding: 18px 40px;
+
+        background: white;
+
+        flex-wrap: nowrap;
+        }
+
+        .nav-links {
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 14px;
+
+        margin-left: auto;
+
+        flex-wrap: nowrap;
+        }
+
+        .nav-links a {
+
+        white-space: nowrap;
+        }
+
+        .nav-user {
+
+        display: inline-flex;
+
+        align-items: center;
+
+        gap: 8px;
+
+        white-space: nowrap;
+        }
+
+        .page-header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            flex-wrap: wrap;
+
+            gap: 1rem;
+
+            margin: 2rem 0;
+        }
+
+        .search-filter {
+
+            display: flex;
+
+            gap: 1rem;
+
+            flex-wrap: wrap;
+
+            margin-bottom: 2rem;
+        }
+
+        .search-filter input,
+        .search-filter select {
+
+            padding: 12px;
+
+            border-radius: 8px;
+
+            border: 1px solid #ddd;
+
+            min-width: 220px;
+
+            font-size: 15px;
+        }
+
+        .products-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fill,
+                minmax(280px,1fr));
+
+            gap: 1.5rem;
+        }
+
+        .product-card {
+
+            background: white;
+
+            border-radius: 14px;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 4px 12px rgba(0,0,0,0.08);
+
+            transition: 0.3s;
+
+            display: flex;
+
+            flex-direction: column;
+        }
+
+        .product-card:hover {
+
+            transform: translateY(-5px);
+
+            box-shadow:
+                0 8px 18px rgba(0,0,0,0.12);
+        }
+
+        .product-img {
+
+            width: 100%;
+
+            height: 240px;
+
+            object-fit: cover;
+        }
+
+        .product-info {
+
+            padding: 1rem;
+
+            flex: 1;
+
+            display: flex;
+
+            flex-direction: column;
+        }
+
+        .category-badge {
+
+            display: inline-block;
+
+            background: #ede9fe;
+
+            color: #5b21b6;
+
+            padding: 5px 10px;
+
+            border-radius: 20px;
+
+            font-size: 0.8rem;
+
+            margin-bottom: 0.8rem;
+
+            width: fit-content;
+        }
+
+        .product-title {
+
+            font-size: 1.1rem;
+
+            font-weight: bold;
+
+            margin-bottom: 0.5rem;
+
+            color: #111827;
+        }
+
+        .product-desc {
+
+            color: #6b7280;
+
+            font-size: 0.95rem;
+
+            margin-bottom: 1rem;
+
+            line-height: 1.5;
+
+            flex: 1;
+        }
+
+        .product-store {
+
+            font-size: 0.9rem;
+
+            color: #666;
+
+            margin-bottom: 0.5rem;
+        }
+
+        .product-stock {
+
+            font-size: 0.85rem;
+
+            margin-bottom: 1rem;
+
+            color: #374151;
+        }
+
+        .product-price {
+
+            font-size: 1.3rem;
+
+            font-weight: bold;
+
+            color: #111827;
+
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+
+            width: 100%;
+        }
+
+        .out-stock {
+
+            background: #d1d5db !important;
+
+            cursor: not-allowed;
+        }
+
+        .empty-products {
+
+            background: white;
+
+            padding: 3rem;
+
+            border-radius: 12px;
+
+            text-align: center;
+
+            box-shadow:
+                0 4px 12px rgba(0,0,0,0.1);
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav>
+
+    <a href="#"
+       class="nav-brand">
+
+        E-Shop
+
+    </a>
+
+    <div class="nav-links"
+         id="navLinks"></div>
+
+</nav>
+
+<!-- MAIN -->
+<div class="container">
+
+    <div id="alertMsg"
+         class="alert"></div>
+
+    <!-- HEADER -->
+    <div class="page-header">
+
+        <h2>
+
+            All Products
+
+        </h2>
+
+    </div>
+
+    <!-- SEARCH + FILTER -->
+    <div class="search-filter">
+
+        <input type="text"
+               id="searchInput"
+               placeholder="Search products...">
+
+        <select id="categorySelect">
+
+            <option value="">
+                All Categories
+            </option>
+
+        </select>
+
+        <button class="btn"
+                style="width:auto;"
+                onclick="searchProducts()">
+
+            Search
+
+        </button>
+
+    </div>
+
+    <!-- PRODUCTS -->
+    <div class="products-grid"
+         id="productsGrid">
+
+    </div>
+
+</div>
+
+<script src="/js/app.js"></script>
+
+<script>
+
+    const user =
+        checkAuth('CUSTOMER');
+
+    // LOAD PRODUCTS
+    async function loadProducts() {
+
+        try {
+
+            const products =
+                await apiFetch('/products');
+
+            renderProducts(products);
+
+        } catch (err) {
+
+            showAlert(
+                'Failed to load products: '
+                + err.message,
+                true
+            );
+        }
+    }
+
+    // RENDER PRODUCTS
+    function renderProducts(products) {
+
+        const grid =
+            document.getElementById(
+                'productsGrid'
+            );
+
+        grid.innerHTML = '';
+
+        // EMPTY PRODUCTS
+        if (products.length === 0) {
+
+            grid.innerHTML = `
+                <div class="empty-products">
+
+                    <h3>
+
+                        No Products Found
+
+                    </h3>
+
+                    <p>
+
+                        Try another search or category.
+
+                    </p>
+
+                </div>
+            `;
+
+            return;
+        }
+
+        products.forEach(p => {
+
+            const btnHtml =
+                p.available
+                    ? `
+                        <button class="btn"
+                            onclick="addToCart(${p.id})">
+
+                            Add To Cart
+
+                        </button>
+                    `
+                    : `
+                        <button class="btn out-stock"
+                                disabled>
+
+                            Out Of Stock
+
+                        </button>
+                    `;
+
+            grid.innerHTML += `
+                <div class="product-card"
+                     ${!p.available
+                        ? 'style="opacity:0.7;"'
+                        : ''}>
+
+                    <img src="${p.imageUrl}"
+                         alt="${p.name}"
+                         class="product-img">
+
+                    <div class="product-info">
+
+                        <div class="category-badge">
+
+                            ${p.category?.name || 'General'}
+
+                        </div>
+
+                        <div class="product-title">
+
+                            ${p.name}
+
+                        </div>
+
+                        <div class="product-desc">
+
+                            ${p.description || ''}
+
+                        </div>
+
+                        <div class="product-store">
+
+                            🏪 ${p.storeName}
+
+                        </div>
+
+                        <div class="product-stock">
+
+                            Stock:
+                            ${p.quantity}
+
+                        </div>
+
+                        <div class="product-price">
+                            ${formatPrice(p.price)}
+                        </div>
+
+                        ${btnHtml}
+
+                    </div>
+
+                </div>
+            `;
+        });
+    }
+
+    // ADD TO CART
+    async function addToCart(productId) {
+
+        try {
+
+            await apiFetch('/cart', {
+
+                method: 'POST',
+
+                body: JSON.stringify({
+
+                    productId,
+                    quantity: 1
+                })
+            });
+
+            showAlert(
+                'Product added to cart!',
+                false
+            );
+
+            updateCartCount();
+
+        } catch (err) {
+
+            showAlert(
+                'Failed to add to cart: '
+                + err.message,
+                true
+            );
+        }
+    }
+
+    // LOAD CATEGORIES
+    async function loadCategories() {
+
+        try {
+
+            const categories =
+                await apiFetch('/categories');
+
+            const select =
+                document.getElementById(
+                    'categorySelect'
+                );
+
+            categories.forEach(category => {
+
+                select.innerHTML += `
+                    <option value="${category.name}">
+
+                        ${category.name}
+
+                    </option>
+                `;
+            });
+
+        } catch (err) {
+
+            console.error(err);
+        }
+    }
+
+    // SEARCH PRODUCTS
+    async function searchProducts() {
+
+        const keyword =
+            document.getElementById(
+                'searchInput'
+            ).value;
+
+        const category =
+            document.getElementById(
+                'categorySelect'
+            ).value;
+
+        try {
+
+            let endpoint =
+                '/products';
+
+            // SEARCH
+            if (keyword.trim()) {
+
+                endpoint =
+                    `/products/search?keyword=${keyword}`;
+
+            }
+
+            // CATEGORY
+            else if (category) {
+
+                endpoint =
+                    `/products/category/${category}`;
+            }
+
+            const products =
+                await apiFetch(endpoint);
+
+            renderProducts(products);
+
+        } catch (err) {
+
+            showAlert(
+                'Search failed: '
+                + err.message,
+                true
+            );
+        }
+    }
+
+    // ENTER KEY SEARCH
+    document
+        .getElementById('searchInput')
+        .addEventListener(
+            'keypress',
+            function(e) {
+
+                if (e.key === 'Enter') {
+
+                    searchProducts();
+                }
+            }
+        );
+
+    // AUTO CATEGORY FILTER
+    document
+        .getElementById('categorySelect')
+        .addEventListener(
+            'change',
+            searchProducts
+        );
+
+    // INITIAL LOAD
+    if (user) {
+
+        loadCategories();
+
+        loadProducts();
+    }
+
+</script>
+
+</body>
+
+</html>
